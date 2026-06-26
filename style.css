@@ -386,6 +386,28 @@ body {
   color: var(--text-light);
 }
 
+.send-comment-btn {
+  background: linear-gradient(135deg, #E1306C, #405DE6);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.send-comment-btn:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.send-comment-btn:active {
+  transform: translateY(0);
+}
+
 .comments {
   padding: 14px 16px;
   border-top: 1px solid var(--border-color);

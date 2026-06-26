@@ -45,16 +45,17 @@ function renderPost(post, prepend=false) {
   const feed = document.getElementById('feed');
   const postDiv = document.createElement('div');
   postDiv.className = 'post';
+  postDiv.setAttribute('data-post-id', post.id);
 
   const currentUser = localStorage.getItem("currentUser");
-  let deleteBtn = "";
-  if (post.user === currentUser) {
-    deleteBtn = `<button class="delete-btn" onclick="deletePostItem(this)">🗑️</button>`;
-  }
-
   const userInitial = post.user.charAt(0).toUpperCase();
   const isSaved = saveSystem.isSaved(post.id);
   const isFollowing = followSystem.isFollowing(currentUser, post.user);
+
+  let deleteBtn = "";
+  if (post.user === currentUser) {
+    deleteBtn = `<button class="delete-btn" onclick="deletePostItem(event)">🗑️</button>`;
+  }
 
   postDiv.innerHTML = `
     <div class="post-header">
@@ -73,16 +74,20 @@ function renderPost(post, prepend=false) {
     <img src="${post.src}" alt="post" class="post-img" onclick="viewCounter.addView('${post.id}')">
     <div style="padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; color: var(--text-light);">👁️ ${post.views || 0} مشاهدات</div>
     <div class="actions">
-      <button class="like-btn" onclick="toggleLike(this, '${post.id}')">❤️</button>
+      <button class="like-btn" onclick="toggleLike(this, ${post.id})">❤️ ${post.likes || 0}</button>
       <button class="send-comment">💬</button>
-      <button class="delete-btn" onclick="toggleSave(this, '${post.id}')">${isSaved ? '💾' : '🔖'}</button>
-      <button class="delete-btn" onclick="shareSystem.sharePost(${JSON.stringify(post).replace(/"/g, '&quot;')})">📤</button>
+      <button class="save-btn" onclick="toggleSave(this, ${post.id})">${isSaved ? '💾' : '🔖'}</button>
+      <button class="share-btn" onclick="shareSystem.sharePost('${post.id}')">📤</button>
     </div>
     <div class="comments"></div>
-    <input type="text" placeholder="اكتب تعليق..." class="comment-input" style="padding: 10px 15px; border: none; border-top: 1px solid var(--border-color); width: 100%; box-sizing: border-box;"/>
+    <div style="display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border-color);">
+      <input type="text" placeholder="اكتب تعليق..." class="comment-input" style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 0.9rem;"/>
+      <button class="send-comment-btn" onclick="addCommentToPost(this, ${post.id})">إرسال</button>
+    </div>
   `;
 
   const commentsDiv = postDiv.querySelector('.comments');
+  const likeBtn = postDiv.querySelector('.like-btn');
 
   post.comments.forEach(c => {
     const commentDiv = document.createElement('div');
@@ -92,6 +97,7 @@ function renderPost(post, prepend=false) {
       const del = document.createElement('button');
       del.textContent = "🗑️";
       del.className = "delete-btn";
+      del.style.fontSize = "0.8rem";
       del.onclick = () => {
         post.comments = post.comments.filter(x => x !== c);
         commentDiv.remove();
@@ -102,16 +108,8 @@ function renderPost(post, prepend=false) {
     commentsDiv.appendChild(commentDiv);
   });
 
-  if (post.user === currentUser) {
-    postDiv.querySelector('.delete-btn').onclick = () => {
-      deletePostItem(postDiv.querySelector('.delete-btn'));
-    };
-  }
-
-  const likeBtn = postDiv.querySelector('.like-btn');
-  likeBtn.textContent = `❤️ ${post.likes}`;
-
-  postDiv.querySelector('.send-comment').onclick = () => {
+  const sendCommentBtn = postDiv.querySelector('.send-comment');
+  sendCommentBtn.onclick = () => {
     const input = postDiv.querySelector('.comment-input');
     if (input.value.trim() !== "") {
       const newComment = { text: input.value.trim(), user: currentUser };
@@ -123,6 +121,7 @@ function renderPost(post, prepend=false) {
       const del = document.createElement('button');
       del.textContent = "🗑️";
       del.className = "delete-btn";
+      del.style.fontSize = "0.8rem";
       del.onclick = () => {
         post.comments = post.comments.filter(x => x !== newComment);
         commentDiv.remove();
@@ -145,12 +144,12 @@ function renderPost(post, prepend=false) {
 
 function toggleLike(btn, postId) {
   const allPosts = JSON.parse(localStorage.getItem("posts")) || [];
-  const post = allPosts.find(p => p.id === postId);
-  if (post) {
-    post.likes++;
-    btn.textContent = `❤️ ${post.likes}`;
+  const postIndex = allPosts.findIndex(p => p.id == postId);
+  if (postIndex !== -1) {
+    allPosts[postIndex].likes++;
+    btn.textContent = `❤️ ${allPosts[postIndex].likes}`;
     reactions.addReaction(postId, '❤️');
-    updateStorage();
+    localStorage.setItem("posts", JSON.stringify(allPosts));
   }
 }
 
@@ -164,11 +163,58 @@ function toggleSave(btn, postId) {
   }
 }
 
-function deletePostItem(btn) {
-  const post = btn.closest('.post');
-  const src = post.querySelector('img').src;
-  post.remove();
-  deletePost(src);
+function addCommentToPost(btn, postId) {
+  const input = btn.closest('div').querySelector('.comment-input');
+  if (input.value.trim() === "") {
+    alert("اكتب تعليق أولاً!");
+    return;
+  }
+  
+  const allPosts = JSON.parse(localStorage.getItem("posts")) || [];
+  const post = allPosts.find(p => p.id == postId);
+  if (post) {
+    const currentUser = localStorage.getItem("currentUser") || "ضيف";
+    const newComment = { text: input.value.trim(), user: currentUser };
+    post.comments.push(newComment);
+    localStorage.setItem("posts", JSON.stringify(allPosts));
+    
+    const commentDiv = document.createElement('div');
+    commentDiv.className = "comment-item";
+    commentDiv.innerHTML = `<p><strong>${newComment.user}:</strong> ${newComment.text}</p>`;
+    const del = document.createElement('button');
+    del.textContent = "🗑️";
+    del.className = "delete-btn";
+    del.style.fontSize = "0.8rem";
+    del.onclick = () => {
+      post.comments = post.comments.filter(x => x !== newComment);
+      commentDiv.remove();
+      localStorage.setItem("posts", JSON.stringify(allPosts));
+    };
+    commentDiv.appendChild(del);
+    
+    const commentsDiv = btn.closest('.post').querySelector('.comments');
+    commentsDiv.appendChild(commentDiv);
+    input.value = "";
+    
+    // تسجيل النشاط
+    activityLogger.logActivity('comment_added', { user: currentUser, postId });
+  }
+}
+
+function deletePostItem(event) {
+  const postDiv = event.target.closest('.post');
+  const postId = postDiv.getAttribute('data-post-id');
+  
+  if (confirm("هل تريد حقاً حذف هذا البوست؟")) {
+    let allPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    allPosts = allPosts.filter(p => p.id != postId);
+    localStorage.setItem("posts", JSON.stringify(allPosts));
+    postDiv.remove();
+    
+    // تسجيل النشاط
+    const currentUser = localStorage.getItem("currentUser");
+    activityLogger.logActivity('post_deleted', { user: currentUser, postId });
+  }
 }
 
 function savePost(post) {
@@ -184,16 +230,8 @@ function deletePost(src) {
 }
 
 function updateStorage() {
-  const allPosts = [];
-  document.querySelectorAll('.post').forEach(postDiv => {
-    const src = postDiv.querySelector('img').src;
-    const likes = parseInt(postDiv.querySelector('.like-btn').textContent.replace(/[^\d]/g, "")) || 0;
-    const comments = [];
-    postDiv.querySelectorAll('.comments .comment-item p').forEach(p => {
-      const text = p.textContent.split(': ').slice(1).join(': ');
-      comments.push({ text, user: localStorage.getItem("currentUser") });
-    });
-    allPosts.push({ src, likes, comments, user: localStorage.getItem("currentUser") });
-  });
+  // الدالة حالياً لا تحتاج إلى تحديث يدوي
+  // لأن جميع التعديلات تحفظ مباشرة في localStorage
+  const allPosts = JSON.parse(localStorage.getItem("posts")) || [];
   localStorage.setItem("posts", JSON.stringify(allPosts));
 }
