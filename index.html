@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftGram</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a class="navbar-brand" href="index.html">SoftGram</a>
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="explore.html">🔍 اكتشاف</a></li>
+      <li><a href="messages.html">💬 الرسائل</a></li>
+      <li><a href="notifications.html">🔔 الإشعارات</a></li>
+      <li><a href="profile.html">👤 البروفايل</a></li>
+      <li><a href="login.html">🔑 تسجيل الدخول</a></li>
+      <li><a href="#" onclick="darkMode.toggleDarkMode(); return false;">🌙 وضع ليلي</a></li>
+    </ul>
+    <a href="#" class="btn-orange">➕ جديد</a>
+  </nav>
+
+  <!-- Search Bar (Feature 1) -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="ابحث عن البوستات والمستخدمين...">
+    <div id="searchResults" class="search-results"></div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>اكتشف صور <span>رائعة</span></h1>
+    <p>شارك لحظاتك المميزة مع الجميع</p>
+  </section>
+
+  <!-- Statistics (Feature 15) -->
+  <div class="stats-section">
+    <div class="stat-card">
+      <h3 id="totalPosts">0</h3>
+      <p>البوستات</p>
+    </div>
+    <div class="stat-card">
+      <h3 id="totalLikes">0</h3>
+      <p>الإعجابات</p>
+    </div>
+    <div class="stat-card">
+      <h3 id="totalComments">0</h3>
+      <p>التعليقات</p>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <main id="feed"></main>
+
+  <!-- Footer -->
+  <footer>
+    <input type="file" id="upload" accept="image/*" placeholder="اختر صورة">
+    <button onclick="addPost()">📤 نشر</button>
+    <button onclick="backups.createBackup()" title="نسخة احتياطية">💾 حفظ</button>
+    <button onclick="exportData.exportJSON()" title="تصدير البيانات">📥 تصدير</button>
+  </footer>
+
+  <script src="features.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // تحديث الإحصائيات (Feature 15)
+    function updateStats() {
+      const stats = statistics.getStats();
+      document.getElementById("totalPosts").textContent = stats.totalPosts;
+      document.getElementById("totalLikes").textContent = stats.totalLikes;
+      document.getElementById("totalComments").textContent = stats.totalComments;
+    }
+
+    // البحث المتقدم (Feature 1)
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const results = searchEngine.search(e.target.value);
+      displaySearchResults(results);
+    });
+
+    function displaySearchResults(results) {
+      const resultsDiv = document.getElementById('searchResults');
+      resultsDiv.innerHTML = '';
+      if (results.length > 0) {
+        resultsDiv.style.display = 'block';
+        results.slice(0, 5).forEach(post => {
+          const div = document.createElement('div');
+          div.className = 'search-result-item';
+          div.innerHTML = `<strong>${post.user}</strong>: ${post.comments?.length || 0} تعليق`;
+          resultsDiv.appendChild(div);
+        });
+      } else {
+        resultsDiv.style.display = 'none';
+      }
+    }
+
+    // تحديث الإحصائيات عند التحميل
+    window.addEventListener('load', updateStats);
+  </script>
+</body>
+</html>

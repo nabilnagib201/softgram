@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftGram - الاستكشاف</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="index.html">SoftGram</a>
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="explore.html">🔍 اكتشاف</a></li>
+      <li><a href="messages.html">💬 الرسائل</a></li>
+      <li><a href="notifications.html">🔔 الإشعارات</a></li>
+      <li><a href="profile.html">👤 البروفايل</a></li>
+      <li><a href="login.html">🔑 تسجيل الدخول</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>🔍 الاستكشاف</h1>
+    <p>اكتشف محتوى جديد ومستخدمين</p>
+  </section>
+
+  <div style="max-width: 600px; margin: 20px auto;">
+    <!-- Trending Posts -->
+    <div style="background: white; padding: 20px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px;">
+      <h2 style="color: var(--text-dark); margin-bottom: 15px;">📈 البوستات الشهيرة</h2>
+      <div id="trending-posts"></div>
+    </div>
+
+    <!-- Trending Hashtags -->
+    <div style="background: white; padding: 20px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 20px;">
+      <h2 style="color: var(--text-dark); margin-bottom: 15px;">#️⃣ الهاشتاغات الشهيرة</h2>
+      <div id="trending-hashtags"></div>
+    </div>
+
+    <!-- Recommended Users -->
+    <div style="background: white; padding: 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+      <h2 style="color: var(--text-dark); margin-bottom: 15px;">👥 مستخدمون موصى بهم</h2>
+      <div id="recommended-users"></div>
+    </div>
+  </div>
+
+  <script src="features.js"></script>
+  <script>
+    function displayTrendingContent() {
+      // Trending Posts
+      const trendingPosts = trending.getTrendingPosts(5);
+      const postsHtml = trendingPosts.map(post => `
+        <div style="padding: 10px; border-bottom: 1px solid var(--border-color);">
+          <strong>${post.user}</strong> - ❤️ ${post.likes}
+        </div>
+      `).join('');
+      document.getElementById('trending-posts').innerHTML = postsHtml || '<p>لا توجد بوستات</p>';
+
+      // Trending Hashtags
+      const trendingTags = hashtags.getTrendingTags(5);
+      const tagsHtml = trendingTags.map(tag => `
+        <div style="padding: 10px; border-bottom: 1px solid var(--border-color);">
+          <strong>${tag.tag}</strong> - ${tag.count} منشور
+        </div>
+      `).join('');
+      document.getElementById('trending-hashtags').innerHTML = tagsHtml || '<p>لا توجد هاشتاغات</p>';
+
+      // Recommended Users
+      const recommendedUsers = recommendations.getRecommendedUsers();
+      const usersHtml = recommendedUsers.map(user => `
+        <div style="padding: 10px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <strong>${user}</strong>
+          <button onclick="followSystem.follow('${user}'); alert('تم المتابعة!');" style="background: var(--accent); color: white; border: none; border-radius: 6px; padding: 5px 15px; cursor: pointer;">متابعة</button>
+        </div>
+      `).join('');
+      document.getElementById('recommended-users').innerHTML = usersHtml || '<p>لا توجد توصيات</p>';
+    }
+
+    window.addEventListener('load', displayTrendingContent);
+  </script>
+</body>
+</html>

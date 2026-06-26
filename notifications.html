@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftGram - الإشعارات</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="index.html">SoftGram</a>
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="explore.html">🔍 اكتشاف</a></li>
+      <li><a href="messages.html">💬 الرسائل</a></li>
+      <li><a href="notifications.html">🔔 الإشعارات</a></li>
+      <li><a href="profile.html">👤 البروفايل</a></li>
+      <li><a href="login.html">🔑 تسجيل الدخول</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>🔔 الإشعارات</h1>
+    <p>كن على اطلاع على كل ما يحدث</p>
+  </section>
+
+  <div style="max-width: 600px; margin: 20px auto;">
+    <button onclick="notificationSystem.clearAll()" style="width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; margin-bottom: 20px;">حذف جميع الإشعارات</button>
+    <div id="notifications-list"></div>
+  </div>
+
+  <script src="features.js"></script>
+  <script>
+    function displayNotifications() {
+      const list = document.getElementById('notifications-list');
+      const notifications = notificationSystem.getNotifications();
+      
+      if (notifications.length === 0) {
+        list.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--text-light);">لا توجد إشعارات</p>';
+        return;
+      }
+
+      list.innerHTML = notifications.map(notif => `
+        <div style="background: white; padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px;">
+          <p><strong>${notif.type}</strong></p>
+          <p>${notif.message}</p>
+          <small style="color: var(--text-light);">${notif.timestamp}</small>
+        </div>
+      `).join('');
+    }
+
+    window.addEventListener('load', displayNotifications);
+  </script>
+</body>
+</html>
