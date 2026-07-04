@@ -2,23 +2,35 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SoftGram - الرئيسية</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <nav class="navbar">
-    <a href="index.html">🏠 الرئيسية</a>
-    <a href="chat.html">💬 الشات العام</a>
-    <a href="login.html">🔑 الدخول</a>
+    <a class="navbar-brand" href="index.html">SoftGram</a>
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="explore.html">🔍 اكتشاف</a></li>
+      <li><a href="messages.html">💬 الرسائل</a></li>
+      <li><a href="chat.html">💬 الشات العام</a></li>
+      <li><a href="notifications.html">🔔 الإشعارات</a></li>
+      <li><a href="profile.html">👤 البروفايل</a></li>
+    </ul>
+    <a href="login.html" class="btn-orange">🔑 تسجيل الدخول</a>
   </nav>
 
-  <div class="feed-container">
-    <h3>أنشئ منشوراً جديداً</h3>
+  <section class="hero">
+    <h1>مرحباً بك في <span>SoftGram</span></h1>
+    <p>شارك لحظاتك مع أصدقائك</p>
+  </section>
+
+  <div id="feed"></div>
+
+  <footer>
     <input type="file" id="upload" accept="image/*">
-    <button onclick="addPost()" style="background: orange; color:white; border:none; padding:5px 10px; cursor:pointer;">نشر</button>
-    <hr>
-    <div id="feed"></div>
-  </div>
+    <button onclick="addPost()">نشر</button>
+  </footer>
 
   <script src="app.js"></script>
 </body>
