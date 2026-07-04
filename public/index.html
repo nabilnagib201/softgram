@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>SoftGram - الرئيسية</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #fafafa; margin: 0; padding: 20px; }
+    .navbar { background: #fff; padding: 10px; display: flex; gap: 15px; border-bottom: 1px solid #ddd; }
+    .navbar a { text-decoration: none; color: #333; }
+    .feed-container { max-width: 500px; margin: 20px auto; background: #fff; padding: 15px; border: 1px solid #ddd; }
+    .post { border: 1px solid #eee; margin-bottom: 20px; border-radius: 5px; background: #fff; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html">🏠 الرئيسية</a>
+    <a href="chat.html">💬 الشات العام</a>
+    <a href="login.html">🔑 الدخول</a>
+  </nav>
+
+  <div class="feed-container">
+    <h3>أنشئ منشوراً جديداً</h3>
+    <input type="file" id="upload" accept="image/*">
+    <button onclick="addPost()" style="background: orange; color:white; border:none; padding:5px 10px; cursor:pointer;">نشر</button>
+    <hr>
+    <div id="feed"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

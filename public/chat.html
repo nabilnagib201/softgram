@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>SoftGram - الشات</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #eee; padding: 20px; }
+    #chat-box { background: white; height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+    .sent { text-align: left; color: blue; }
+    .received { text-align: right; color: green; }
+  </style>
+</head>
+<body>
+  <h2>💬 غرفة الدردشة العامة</h2>
+  <div id="chat-box"></div>
+  <input type="text" id="chat-input" placeholder="اكتب رسالة هنا..." style="width: 70%; padding: 5px;">
+  <button onclick="sendMessage()" style="padding: 5px 15px;">إرسال</button>
+  <br><br>
+  <a href="index.html">🏠 العودة للرئيسية</a>
+
+  <script src="chat.js"></script>
+</body>
+</html>

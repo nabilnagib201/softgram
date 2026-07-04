@@ -1,0 +1,9 @@
+{
+  "name": "softgram-vercel-server",
+  "version": "1.0.0",
+  "description": "SoftGram Serverless Application for Vercel",
+  "main": "api/posts.js",
+  "dependencies": {
+    "cors": "^2.8.5"
+  }
+}
