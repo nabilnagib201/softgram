@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,84 +20,97 @@
     </ul>
   </nav>
 
-  <section class="hero">
-    <h1>💬 الرسائل المباشرة</h1>
-    <p>تواصل مع أصدقائك بشكل خاص</p>
-  </section>
-
-  <div style="max-width: 800px; margin: 0 auto; display: flex; gap: 20px; padding: 20px;">
-    <!-- Conversations List -->
-    <div style="flex: 0 0 250px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border-color); overflow-y: auto; max-height: 500px;">
-      <div style="padding: 15px; border-bottom: 1px solid var(--border-color); font-weight: 600;">المحادثات</div>
-      <div id="conversations-list"></div>
-      <input type="text" id="new-recipient" placeholder="إرسال رسالة إلى..." style="width: calc(100% - 20px); padding: 10px; border: 1px solid var(--border-color); border-top: 1px solid var(--border-color);"/>
+  <div style="max-width: 900px; margin: 30px auto; display: flex; gap: 20px; padding: 0 20px; height: 550px;">
+    <div class="conversations-box" style="flex: 0 0 280px;">
+      <div class="conversations-header">
+        <span class="header-icon">💬</span>
+        <h2>المحادثات المباشرة</h2>
+        <span class="chats-count" id="chats-count">0</span>
+      </div>
+      <div class="new-chat-wrapper">
+        <input type="text" id="new-recipient" class="new-chat-input" placeholder="إرسال رسالة إلى...">
+      </div>
+      <div id="conversations-list" class="conversations-list"></div>
     </div>
 
-    <!-- Chat Box -->
-    <div style="flex: 1; background: var(--surface); border-radius: 8px; border: 1px solid var(--border-color); display: flex; flex-direction: column;">
-      <div style="padding: 15px; border-bottom: 1px solid var(--border-color); font-weight: 600;" id="chat-header">اختر محادثة</div>
-      <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px;"></div>
-      <div style="padding: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 10px;">
-        <input type="text" id="message-input" placeholder="اكتب رسالة..." style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 20px;"/>
-        <button onclick="sendDM()" style="background: var(--accent); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem;">📤</button>
+    <div style="flex: 1; background: var(--surface); border-radius: 16px; border: 1px solid var(--border-color); display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--border-color); font-weight: 700; color: var(--accent); background: rgba(0,0,0,0.1);" id="chat-header">اختر محادثة</div>
+      <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: rgba(0, 0, 0, 0.05);"></div>
+      <div style="padding: 15px 20px; border-top: 1px solid var(--border-color); display: flex; gap: 10px; background: rgba(0,0,0,0.1); align-items: center;">
+        <input type="text" id="message-input" placeholder="اكتب رسالة..." style="flex: 1; padding: 12px 18px; background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 24px; color: var(--text-dark);">
+        <button onclick="sendDM()" style="background: var(--accent); color: var(--bg-light); border: none; border-radius: 50%; width: 44px; height: 44px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; font-weight: bold;">📤</button>
       </div>
     </div>
   </div>
 
   <script src="features.js"></script>
-  <script src="app.js"></script>
   <script>
     let currentConversation = null;
 
     function displayConversations() {
       const list = document.getElementById('conversations-list');
+      if (!list || typeof directMessages === 'undefined') return;
       const conversations = Object.keys(directMessages.messages);
-      list.innerHTML = conversations.map(conv => `
-        <div onclick="openConversation('${conv}')" style="padding: 12px 15px; border-bottom: 1px solid var(--border-color); cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='var(--secondary)'" onmouseout="this.style.background='var(--surface)'">
-          ${conv}
-        </div>
-      `).join('');
+      document.getElementById('chats-count').textContent = conversations.length;
+
+      if (conversations.length === 0) {
+        list.innerHTML = `<div style="color:var(--text-light); text-align:center; padding:20px;">لا توجد محادثات</div>`;
+        return;
+      }
+
+      list.innerHTML = conversations.map(conv => {
+        const [user1, user2] = conv.split('-');
+        const otherUser = localStorage.getItem("currentUser") === user1 ? user2 : user1;
+        const isActive = currentConversation === conv ? 'active' : '';
+        return `
+          <div onclick="openConversation('${conv}')" class="conversation-item ${isActive}">
+            <div style="width:36px; height:36px; border-radius:50%; background:var(--secondary); display:flex; align-items:center; justify-content:center; color:var(--accent); font-weight:bold;">${otherUser.charAt(0).toUpperCase()}</div>
+            <div style="font-weight:600; color:var(--text-dark);">@${otherUser}</div>
+          </div>
+        `;
+      }).join('');
     }
 
     function openConversation(conversationKey) {
       currentConversation = conversationKey;
       const [user1, user2] = conversationKey.split('-');
       const otherUser = localStorage.getItem("currentUser") === user1 ? user2 : user1;
-      
-      document.getElementById('chat-header').textContent = `💬 ${otherUser}`;
+      document.getElementById('chat-header').textContent = `💬 المحادثة مع: ${otherUser}`;
       
       const messages = directMessages.getConversation(otherUser);
       const messagesDiv = document.getElementById('chat-messages');
       
-      messagesDiv.innerHTML = messages.map(msg => `
-        <div style="align-self: ${msg.from === localStorage.getItem("currentUser") ? 'flex-end' : 'flex-start'}; background: ${msg.from === localStorage.getItem("currentUser") ? 'var(--accent)' : 'var(--secondary)'}; color: ${msg.from === localStorage.getItem("currentUser") ? 'white' : 'var(--text-dark)'}; padding: 10px 15px; border-radius: 15px; max-width: 70%;">
-          ${msg.text}
-          <div style="font-size: 0.8rem; margin-top: 5px; opacity: 0.7;">${msg.timestamp}</div>
-        </div>
-      `).join('');
-      
+      messagesDiv.innerHTML = messages.map(msg => {
+        const isMe = msg.from === localStorage.getItem("currentUser");
+        return `
+          <div style="align-self: ${isMe ? 'flex-end' : 'flex-start'}; background: ${isMe ? 'var(--accent)' : 'var(--secondary)'}; color: ${isMe ? 'var(--bg-light)' : 'var(--text-dark)'}; padding: 12px 16px; border-radius: 14px; max-width: 70%; box-shadow: var(--shadow-sm);">
+            <div>${msg.text}</div>
+          </div>
+        `;
+      }).join('');
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
-      directMessages.markAsRead(otherUser);
+      displayConversations();
     }
 
     function sendDM() {
       const recipientInput = document.getElementById('new-recipient');
       const messageInput = document.getElementById('message-input');
-      const recipient = recipientInput.value.trim() || currentConversation?.split('-')[1];
+      const recipient = recipientInput.value.trim() || currentConversation?.split('-').find(u => u !== localStorage.getItem("currentUser"));
       const message = messageInput.value.trim();
 
-      if (!recipient || !message) return alert('أدخل المستقبل والرسالة');
-
+      if (!recipient || !message) return alert('أدخل اسم المستخدم ونص الرسالة');
       directMessages.sendMessage(recipient, message);
       messageInput.value = '';
       recipientInput.value = '';
-      
-      currentConversation = null;
+      currentConversation = [localStorage.getItem("currentUser"), recipient].sort().join("-");
       displayConversations();
-      openConversation([localStorage.getItem("currentUser"), recipient].sort().join("-"));
+      openConversation(currentConversation);
     }
 
-    window.addEventListener('load', displayConversations);
+    window.addEventListener('DOMContentLoaded', () => {
+      displayConversations();
+      document.getElementById('message-input').addEventListener('keypress', (e) => { if(e.key === 'Enter') sendDM(); });
+    });
   </script>
 </body>
 </html>

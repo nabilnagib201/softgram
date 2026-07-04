@@ -17,6 +17,7 @@
       <li><a href="notifications.html">🔔 الإشعارات</a></li>
       <li><a href="profile.html">👤 البروفايل</a></li>
     </ul>
+  </nav>
     <a href="login.html" class="btn-orange">🔑 تسجيل الدخول</a>
   </nav>
 
@@ -25,6 +26,49 @@
     <p>شارك لحظاتك مع أصدقائك</p>
   </section>
 
+
+  <!-- صندوق نشر المحتوى (رفع ملفات + تصوير مباشر) -->
+  <div class="upload-section" style="max-width: 600px; margin: 30px auto; padding: 20px; background: var(--surface); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow);">
+    <h3 style="color: var(--accent); margin-top: 0; margin-bottom: 15px;">شارك لحظاتك البرمجية واليومية</h3>
+    
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+      <input type="file" id="upload" accept="image/*" style="display: none;" onchange="addPost()">
+      <button onclick="document.getElementById('upload').click()" style="flex: 1; padding: 12px; background: var(--secondary); color: var(--text-dark); border: 1px solid var(--border-color); border-radius: 10px; font-weight: bold; cursor: pointer;">📁 رفع صورة</button>
+      <button onclick="openCamera()" style="flex: 1; padding: 12px; background: linear-gradient(135deg, var(--accent), #c9a227); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; box-shadow: var(--shadow);">📸 تصوير مباشر</button>
+    </div>
+  </div>
+
+  <!-- تايم لاين عرض المنشورات والتغذية الحية -->
+  <main id="feed" style="max-width: 600px; margin: 0 auto 5px auto; display: flex; flex-direction: column; gap: 25px; padding: 0 10px;"></main>
+
+  <!-- النافذة المنبثقة المخفية لنظام الكاميرا (Camera PopUp Modal) -->
+  <div id="camera-modal" class="camera-modal">
+    <div class="camera-box">
+      <div class="camera-header">
+        <h3>📸 نظام التصوير المباشر للشبكة</h3>
+        <button onclick="closeCamera()" class="close-camera-btn">✕</button>
+      </div>
+      
+      <div class="video-container">
+        <video id="webcam" autoplay playsinline></video>
+        <canvas id="capture-canvas" style="display: none;"></canvas>
+      </div>
+      
+      <div class="camera-footer">
+        <button onclick="takeSnapshot()" class="capture-btn">⚡ التقاط اللحظة ونشرها</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="stories-container" id="stories-wrapper" style="max-width: 600px; margin: 10px auto; display: flex; gap: 10px; padding: 10px; overflow-x: auto; background: var(--surface); border-radius: 8px; border: 1px solid var(--border-color);">
+    <div class="add-story-slot" style="text-align: center; cursor: pointer;" onclick="document.getElementById('story-upload').click()">
+      <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: white;">+</div>
+      <small style="color: var(--text-dark);">قصتك</small>
+      <input type="file" id="story-upload" accept="image/*" style="display: none;" onchange="addNewStory(this)">
+    </div>
+    <div id="active-stories-list" style="display: flex; gap: 10px;"></div>
+  </div>
+
   <div id="feed"></div>
 
   <footer>
@@ -32,6 +76,44 @@
     <button onclick="addPost()">نشر</button>
   </footer>
 
+  <script src="features.js"></script>
   <script src="app.js"></script>
+
+  <script>
+    // كود لتشغيل عرض الستوريز عند تحميل الصفحة
+    window.addEventListener('DOMContentLoaded', () => {
+      renderStoriesUI();
+    });
+
+    function addNewStory(input) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          storiesSystem.addStory(e.target.result);
+          renderStoriesUI();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function renderStoriesUI() {
+      const listEl = document.getElementById('active-stories-list');
+      if (!listEl) return;
+      listEl.innerHTML = '';
+      const activeStories = storiesSystem.getActiveStories();
+      
+      Object.keys(activeStories).forEach(user => {
+        const userStory = activeStories[user][0]; // عرض أحدث ستوري للمستخدم
+        const badge = verificationSystem.getBadgeHtml(user);
+        listEl.innerHTML += `
+          <div style="text-align: center; cursor: pointer;" onclick="alert('عرض قصة ${user}')">
+            <img src="${userStory.src}" style="width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover;">
+            <br><small style="color: var(--text-dark);">${user} ${badge}</small>
+          </div>
+        `;
+      });
+    }
+  </script>
 </body>
 </html>

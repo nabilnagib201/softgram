@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftGram - الملف الشخصي</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* تنسيقات مخصصة لصفحة البروفايل لتعطي طابعاً احترافياً */
+    .profile-container {
+      max-width: 850px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    /* كارت معلومات الحساب الرئيسي */
+    .profile-card {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      gap: 35px;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: 30px;
+    }
+
+    /* الأفاتار التلقائي الكبير */
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--secondary);
+      border: 3px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--accent);
+      box-shadow: var(--shadow);
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-info h2 {
+      font-size: 1.6rem;
+      color: var(--text-dark);
+      margin-bottom: 5px;
+    }
+
+    .profile-info .username-tag {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    /* إحصائيات الحساب */
+    .profile-stats {
+      display: flex;
+      gap: 25px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-item .stat-value {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: var(--accent);
+      display: block;
+    }
+
+    .stat-item .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-lighter);
+    }
+
+    /* زر تسجيل الخروج */
+    .logout-btn {
+      background: none;
+      border: 1px solid rgba(255, 77, 77, 0.3);
+      color: #ff4d4d;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      font-weight: 600;
+      align-self: flex-start;
+      margin-top: auto;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 77, 77, 0.1);
+      border-color: #ff4d4d;
+    }
+
+    /* شبكة عرض منشورات المستخدم (Grid) */
+    .user-posts-title {
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      margin-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 15px;
+    }
+
+    .grid-item {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      position: relative;
+      aspect-ratio: 1 / 1;
+    }
+
+    .grid-item:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow);
+      border-color: rgba(201, 162, 39, 0.3);
+    }
+
+    .grid-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .grid-item-meta {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      color: white;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .grid-item:hover .grid-item-meta {
+      opacity: 1;
+    }
+
+    .no-posts {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-light);
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .profile-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+      }
+      .profile-stats {
+        justify-content: center;
+      }
+      .logout-btn {
+        align-self: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a class="navbar-brand" href="index.html">SoftGram</a>
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="explore.html">🔍 اكتشاف</a></li>
+      <li><a href="messages.html">💬 الرسائل</a></li>
+      <li><a href="chat.html">💬 الشات العام</a></li>
+      <li><a href="notifications.html">🔔 الإشعارات</a></li>
+      <li><a href="profile.html">👤 البروفايل</a></li>
+      <li><a href="login.html">🔑 تسجيل الدخول</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>👤 الملف الشخصي</h1>
+    <p>إدارة حسابك واستعراض منشوراتك الشخصية</p>
+  </section>
+
+  <div class="profile-container">
+    
+    <div class="profile-card">
+      <div class="profile-avatar" id="user-avatar">U</div>
+      <div class="profile-info">
+        <h2 id="profile-display-name">اسم المستخدم</h2>
+        <span class="username-tag" id="profile-username">@username</span>
+        
+        <div class="profile-stats">
+          <div class="stat-item">
+            <span class="stat-value" id="stat-posts">0</span>
+            <span class="stat-label">منشور</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-followers">0</span>
+            <span class="stat-label">متابِع</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="stat-following">0</span>
+            <span class="stat-label">يتابع</span>
+          </div>
+        </div>
+      </div>
+      
+      <button class="logout-btn" onclick="triggerLogout()">🚪 تسجيل الخروج</button>
+    </div>
+
+    <h3 class="user-posts-title">🖼️ منشوراتي الشخصية</h3>
+    <div class="posts-grid" id="user-posts-grid">
+      </div>
+
+  </div>
+
+  <script src="features.js"></script>
+  <script src="app.js"></script>
+  
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // التحقق من تسجيل الدخول أولاً
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      // 1. تعبئة نصوص ومعلومات الحساب والـ Avatar
+      document.getElementById('profile-display-name').textContent = currentUser;
+      document.getElementById('profile-username').textContent = `@${currentUser}`;
+      document.getElementById('user-avatar').textContent = currentUser.charAt(0).toUpperCase();
+
+      // 2. جلب إحصائيات المتابعة من نظام المتابعة الذكي (features.js)
+      if (typeof followSystem !== 'undefined') {
+        const followers = followSystem.getFollowers(currentUser);
+        const following = followSystem.getFollowing(currentUser);
+        document.getElementById('stat-followers').textContent = followers.length;
+        document.getElementById('stat-following').textContent = following.length;
+      }
+
+      // 3. جلب منشورات المستخدم الحالي من السيرفر وعرضها في الـ Grid
+      fetch('/api/posts')
+        .then(res => res.json())
+        .then(allPosts => {
+          // تصفية المنشورات لتشمل فقط الخاصة بالمستخدم الحالي
+          const myPosts = allPosts.filter(post => post.user === currentUser);
+          
+          // تحديث عداد المنشورات
+          document.getElementById('stat-posts').textContent = myPosts.length;
+
+          const gridDiv = document.getElementById('user-posts-grid');
+          if (myPosts.length === 0) {
+            gridDiv.innerHTML = `
+              <div class="no-posts">
+                <p>لم تقم بنشر أي صور حتى الآن. اذهب للرئيسية وابدأ بمشاركة لحظاتك الأولى!</p>
+              </div>
+            `;
+            return;
+          }
+
+          // عرض الصور في الـ Grid بشكل فخم
+          gridDiv.innerHTML = myPosts.map(post => `
+            <div class="grid-item">
+              <img src="${post.src}" alt="منشور">
+              <div class="grid-item-meta">
+                <span>❤️ ${post.likes || 0} إعجاب</span>
+                <span>💬 ${post.comments ? post.comments.length : 0} تعليق</span>
+              </div>
+            </div>
+          `).join('');
+        })
+        .catch(err => {
+          console.error("خطأ أثناء جلب المنشورات للبروفايل:", err);
+          document.getElementById('user-posts-grid').innerHTML = `<div class="no-posts"><p>خطأ أثناء جلب المنشورات من السيرفر.</p></div>`;
+        });
+    });
+
+    // دالة تسجيل الخروج وتفريغ البيانات
+    function triggerLogout() {
+      if (confirm("هل أنت متأكد من رغبتك في تسجيل الخروج؟")) {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("currentUser");
+        window.location.href = "login.html";
+      }
+    }
+  </script>
+</body>
+</html>

@@ -181,17 +181,21 @@ class ActivityLogger {
   }
 }
 
-// 7. الوضع الليلي (Dark Mode System)
+// 7. نظام الوضع الليلي (Dark Mode System)
 class DarkModeSystem {
   constructor() {
     this.enabled = localStorage.getItem("darkMode") === "true";
-    if (this.enabled) document.body.classList.add("dark-mode");
+    this.apply();
   }
 
   toggleDarkMode() {
     this.enabled = !this.enabled;
-    document.body.classList.toggle("dark-mode", this.enabled);
     localStorage.setItem("darkMode", this.enabled);
+    this.apply();
+  }
+
+  apply() {
+    document.body.classList.toggle("dark", this.enabled);
   }
 }
 
@@ -240,7 +244,124 @@ class SaveSystem {
   }
 }
 
-// 10. تفعيل وتجهيز الكائنات البرمجية (Instantiation)
+// 10. نظام القصص اليومية (Stories System) - [ميزة جديدة]
+class StoriesSystem {
+  constructor() {
+    this.stories = JSON.parse(localStorage.getItem("stories")) || {};
+  }
+
+  addStory(imageSrc) {
+    const currentUser = localStorage.getItem("currentUser") || "ضيف";
+    if (!this.stories[currentUser]) this.stories[currentUser] = [];
+    
+    this.stories[currentUser].push({
+      id: Date.now(),
+      src: imageSrc,
+      timestamp: Date.now()
+    });
+    this.save();
+    if (typeof activityLogger !== 'undefined') {
+      activityLogger.logActivity("story", "تمت إضافة قصة يومية جديدة");
+    }
+  }
+
+  getActiveStories() {
+    const oneDay = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+    
+    Object.keys(this.stories).forEach(user => {
+      this.stories[user] = this.stories[user].filter(story => (now - story.timestamp) < oneDay);
+      if (this.stories[user].length === 0) delete this.stories[user];
+    });
+    this.save();
+    return this.stories;
+  }
+
+  save() {
+    localStorage.setItem("stories", JSON.stringify(this.stories));
+  }
+}
+
+// 11. نظام مؤشر الكتابة الفوري (Typing Indicator) - [ميزة جديدة]
+class TypingIndicator {
+  constructor() {
+    this.typingUsers = new Set();
+  }
+
+  setUserTyping(username, isTyping) {
+    if (isTyping) {
+      this.typingUsers.add(username);
+    } else {
+      this.typingUsers.delete(username);
+    }
+    this.updateUI();
+  }
+
+  updateUI() {
+    const indicatorEl = document.getElementById("typing-indicator");
+    if (!indicatorEl) return;
+    
+    if (this.typingUsers.size > 0) {
+      const users = Array.from(this.typingUsers).join(", ");
+      indicatorEl.textContent = `✍️ ${users} يكتب الآن...`;
+      indicatorEl.style.display = "block";
+    } else {
+      indicatorEl.style.display = "none";
+    }
+  }
+}
+
+// 12. نظام التفاعل مع المنشورات بالإيموجي (Emoji Reactions) - [ميزة جديدة]
+class ReactionSystem {
+  constructor() {
+    this.reactions = JSON.parse(localStorage.getItem("postReactions")) || {};
+  }
+
+  addReaction(postId, emoji) {
+    const currentUser = localStorage.getItem("currentUser") || "ضيف";
+    if (!this.reactions[postId]) this.reactions[postId] = {};
+    
+    this.reactions[postId][currentUser] = emoji;
+    localStorage.setItem("postReactions", JSON.stringify(this.reactions));
+    
+    if (typeof activityLogger !== 'undefined') {
+      activityLogger.logActivity("reaction", `تفاعل بـ ${emoji} على المنشور ${postId}`);
+    }
+  }
+
+  getReactionCounts(postId) {
+    const postReactions = this.reactions[postId] || {};
+    const counts = {};
+    Object.values(postReactions).forEach(emoji => {
+      counts[emoji] = (counts[emoji] || 0) + 1;
+    });
+    return counts;
+  }
+}
+
+// 13. نظام شارات التوثيق للمستخدمين (Verification Badges) - [ميزة جديدة]
+class VerificationSystem {
+  constructor() {
+    this.verifiedUsers = {
+      "admin": "gold",
+      "nabil": "blue", 
+      "developer": "blue"
+    };
+  }
+
+  isVerified(username) {
+    return this.verifiedUsers[username] || null;
+  }
+
+  getBadgeHtml(username) {
+    const type = this.isVerified(username);
+    if (type === "gold") return `<span class="badge gold" title="حساب مطور" style="color:var(--accent); margin-right:4px;">👑</span>`;
+    if (type === "blue") return `<span class="badge blue" title="حساب موثق" style="color:#3897f0; margin-right:4px;">✔️</span>`;
+    return "";
+  }
+}
+
+// 14. تفعيل وتجهيز الكائنات البرمجية (Instantiation)
 const searchEngine = new SearchEngine();
 const followSystem = new FollowSystem();
 const notificationSystem = new NotificationSystem();
@@ -250,3 +371,9 @@ const activityLogger = new ActivityLogger();
 const darkMode = new DarkModeSystem();
 const exportData = new ExportSystem();
 const saveSystem = new SaveSystem();
+
+// تفعيل المميزات المتطورة المضافة حديثاً
+const storiesSystem = new StoriesSystem();
+const typingIndicator = new TypingIndicator();
+const reactionSystem = new ReactionSystem();
+const verificationSystem = new VerificationSystem();

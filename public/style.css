@@ -1126,3 +1126,306 @@ body.dark ::-webkit-scrollbar-thumb {
 body.dark ::-webkit-scrollbar-thumb:hover {
   background: #345a41;
 }
+/* تنسيحات شارات التوثيق والمميزات الجديدة */
+.badge {
+  font-size: 0.9rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#typing-indicator {
+  padding: 8px 15px;
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin: 10px auto;
+  max-width: fit-content;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+/* تنسيق رأس قائمة المحادثات */
+.conversations-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, var(--surface), var(--bg-light));
+  border-bottom: 2px solid var(--border-color);
+  border-top-right-radius: 12px;
+  border-top-left-radius: 12px;
+}
+
+/* الأيقونة الصغيرة بجانب العنوان */
+.conversations-header .header-icon {
+  font-size: 1.3rem;
+  background: rgba(201, 162, 39, 0.1); /* لون ذهبي شفاف */
+  padding: 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+/* عنوان المحادثات الرئيسي */
+.conversations-header h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  letter-spacing: 0.3px;
+  margin: 0;
+  flex-grow: 1; /* لجعل عداد الرسائل يتجه لليسار */
+}
+
+/* عداد رقمي للمحادثات النشطة */
+.conversations-header .chats-count {
+  font-size: 0.75rem;
+  background: var(--accent); /* اللون الذهبي */
+  color: var(--bg-light);    /* الأخضر الداكن جداً للتباين */
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+/* الحاوية المحيطة بحقل الإدخال */
+.new-chat-wrapper {
+  padding: 12px 15px;
+  background: rgba(0, 0, 0, 0.15); /* تظليل خفيف ليفصل قسم البحث عن القائمة */
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+}
+
+/* تنسيق حقل الإدخال الجديد */
+.new-chat-input {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--bg-light); /* اللون الأخضر الزيتي الغامق جداً للموقع */
+  border: 1px solid var(--border-color);
+  border-radius: 8px; /* حواف دائرية عصرية */
+  color: var(--text-dark); /* لون الخط الفاتح المتناسق مع الثيم */
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: var(--transition);
+}
+
+/* التأثير التفاعلي عند الضغط على الحقل (Focus) */
+.new-chat-input:focus {
+  outline: none;
+  border-color: var(--accent); /* يتحول الإطار للون الذهبي */
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.15); /* هالة ذهبية شفافة ناعمة */
+}
+
+/* تعديل لون نص التلميح (Placeholder) ليصبح واضحاً وغير فاقع */
+.new-chat-input::placeholder {
+  color: var(--text-lighter);
+  opacity: 0.7;
+}
+/* شريط أزرار التفاعل */
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 15px;
+  border-top: 1px solid var(--border-color);
+}
+
+.action-button {
+  background: none;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.action-button:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--accent); /* يتحول للذهبي عند الحوم */
+}
+
+/* حالة تفعيل زر القلب المضيء */
+.action-button.liked {
+  color: #ff4d4d;
+  animation: heartBeat 0.3s ease-in-out;
+}
+
+@keyframes heartBeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* صندوق قسم التعليقات المدمج */
+.comments-section {
+  background: rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-color);
+  padding: 12px 15px;
+}
+
+.comments-display-list {
+  max-height: 150px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.comment-bubble {
+  font-size: 0.88rem;
+  line-height: 1.4;
+  color: var(--text-dark);
+}
+
+.comment-bubble strong {
+  color: var(--accent); /* اسم كاتب التعليق بالذهبي */
+  margin-left: 5px;
+}
+
+/* حقل كتابة تعليق سريع */
+.comment-input-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.comment-input-wrapper input {
+  flex: 1;
+  background: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: 8px 14px;
+  color: var(--text-dark);
+  font-size: 0.85rem;
+}
+
+.comment-input-wrapper input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.comment-submit-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+/* زر فتح الكاميرا الذهبي */
+.camera-trigger-btn {
+  flex: 1;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--accent), #c9a227);
+  color: var(--bg-light);
+  border: none;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.camera-trigger-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(201, 162, 39, 0.4);
+}
+
+/* خلفية شاشة الكاميرا المنبثقة */
+.camera-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* صندوق الكاميرا الرئيسي */
+.camera-box {
+  background: var(--surface);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  max-width: 500px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.camera-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.camera-header h3 { color: var(--accent); margin: 0; font-size: 1.1rem; }
+
+.close-camera-btn {
+  background: none; border: none; color: var(--text-light);
+  font-size: 1.2rem; cursor: pointer; transition: var(--transition);
+}
+.close-camera-btn:hover { color: #ff4d4d; }
+
+/* حاوية البث المباشر للكاميرا */
+.video-container {
+  position: relative;
+  background: #000;
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#webcam {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* تأثير المرآة الطبيعي عند التصوير */
+}
+
+.camera-footer {
+  padding: 20px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid var(--border-color);
+}
+
+/* زر الالتقاط الدائري المضيء */
+.capture-btn {
+  padding: 12px 30px;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
+  transition: var(--transition);
+}
+
+.capture-btn:hover {
+  background: #ff3333;
+  transform: scale(1.05);
+}

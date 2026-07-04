@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SoftGram - الإشعارات</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* تنسيقات مخصصة لصفحة الإشعارات لتندمج مع الثيم */
+    .notifications-container {
+      max-width: 650px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .notifications-card {
+      background: var(--surface);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+
+    .notifications-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .notifications-header h2 {
+      font-size: 1.2rem;
+      color: var(--text-dark);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .clear-btn {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: var(--transition);
+    }
+
+    .clear-btn:hover {
+      background: rgba(255, 0, 0, 0.1);
+      color: #ff4d4d;
+      border-color: rgba(255, 0, 0, 0.2);
+    }
+
+    .notifications-list {
+      max-height: 550px;
+      overflow-y: auto;
+    }
+
+    /* تنسيق الإشعار الفردي */
+    .notification-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-item:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* حالة الإشعار غير المقروء */
+    .notification-item.unread {
+      background: rgba(201, 162, 39, 0.04);
+    }
+
+    .notification-item.unread::before {
+      content: '';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .notification-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--bg-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      border: 1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-text {
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .notification-text strong {
+      color: var(--accent);
+    }
+
+    .notification-time {
+      color: var(--text-lighter);
+      font-size: 0.75rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+    }
+
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a class="navbar-brand" href="index.html">SoftGram</a>
+    <ul>
+      <li><a href="index.html">🏠 الرئيسية</a></li>
+      <li><a href="explore.html">🔍 اكتشاف</a></li>
+      <li><a href="messages.html">💬 الرسائل</a></li>
+      <li><a href="chat.html">💬 الشات العام</a></li>
+      <li><a href="notifications.html">🔔 الإشعارات</a></li>
+      <li><a href="profile.html">👤 البروفايل</a></li>
+      <li><a href="login.html">🔑 تسجيل الدخول</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>🔔 مركز الإشعارات</h1>
+    <p>تابع آخر التفاعلات والأنشطة الخاصة بحسابك</p>
+  </section>
+
+  <div class="notifications-container">
+    <div class="notifications-card">
+      
+      <div class="notifications-header">
+        <h2>
+          <span>🔔 إشعاراتك</span>
+        </h2>
+        <button class="clear-btn" onclick="clearAllNotifications()">🧹 مسح الكل</button>
+      </div>
+
+      <div id="notifications-list" class="notifications-list">
+        </div>
+
+    </div>
+  </div>
+
+  <script src="features.js"></script>
+  <script src="app.js"></script>
+  
+  <script>
+    // عند تحميل الصفحة، نقوم بجلب وعرض الإشعارات
+    window.addEventListener('DOMContentLoaded', () => {
+      renderNotificationsPage();
+    });
+
+    function renderNotificationsPage() {
+      const listDiv = document.getElementById('notifications-list');
+      if (!listDiv) return;
+
+      // التأكد من أن نظام الإشعارات جاهز وموجود في features.js
+      if (typeof notificationSystem === 'undefined') {
+        listDiv.innerHTML = `<div class="empty-state"><p>حدث خطأ في تحميل نظام الإشعارات الداخلي.</p></div>`;
+        return;
+      }
+
+      // جلب قائمة الإشعارات من النظام (المخزنة محلياً لحساب المستخدم الحالي)
+      const list = notificationSystem.getNotifications();
+
+      if (list.length === 0) {
+        listDiv.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📭</div>
+            <p>صندوق الإشعارات فارغ تماماً حالياً</p>
+          </div>
+        `;
+        return;
+      }
+
+      // عرض الإشعارات وترتيبها من الأحدث للأقدم
+      listDiv.innerHTML = list.map(notif => {
+        // تحديد الأيقونة المناسبة بناءً على نوع الإشعار
+        let icon = '🔔';
+        if (notif.type === 'like') icon = '❤️';
+        if (notif.type === 'comment') icon = '💬';
+        if (notif.type === 'follow') icon = '👤';
+        if (notif.type === 'dm') icon = '✉️';
+
+        const unreadClass = notif.read ? '' : 'unread';
+
+        return `
+          <div class="notification-item ${unreadClass}">
+            <div class="notification-icon">${icon}</div>
+            <div class="notification-content">
+              <div class="notification-text">${notif.text}</div>
+              <div class="notification-time">${notif.timestamp || 'منذ قليل'}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // بمجرد فتح الصفحة، نقوم بتعليم كل الإشعارات كـ "مقروءة"
+      notificationSystem.markAllAsRead();
+    }
+
+    // دالة لمسح كافة الإشعارات
+    function clearAllNotifications() {
+      if (typeof notificationSystem !== 'undefined') {
+        if (confirm('هل أنت متأكد من رغبتك في حذف كافة الإشعارات؟')) {
+          notificationSystem.clearAll();
+          renderNotificationsPage();
+        }
+      }
+    }
+  </script>
+</body>
+</html>

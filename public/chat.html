@@ -14,6 +14,8 @@
       <li><a href="explore.html">🔍 اكتشاف</a></li>
       <li><a href="messages.html">💬 الرسائل</a></li>
       <li><a href="chat.html">💬 الشات العام</a></li>
+      <li><a href="notifications.html">🔔 الإشعارات</a></li>
+      <li><a href="profile.html">👤 البروفايل</a></li>
       <li><a href="login.html">🔑 تسجيل الدخول</a></li>
     </ul>
   </nav>
@@ -23,13 +25,33 @@
     <p>اتكلم مع كل المستخدمين في نفس الوقت</p>
   </section>
 
+  <div id="typing-indicator" style="display: none;"></div>
+
   <div id="chat-box"></div>
 
   <footer>
-    <input type="text" id="chat-input" placeholder="اكتب رسالة هنا...">
+    <input type="text" id="chat-input" placeholder="اكتب رسالة هنا..." oninput="handleTypingStatus()">
     <button onclick="sendMessage()">إرسال</button>
   </footer>
 
+  <script src="features.js"></script>
   <script src="chat.js"></script>
+
+  <script>
+    let typingTimeout;
+    function handleTypingStatus() {
+      const currentUser = localStorage.getItem("currentUser") || "ضيف";
+      // محاكاة إرسال حالة الكتابة (في التطبيق الفعلي ترسل عبر WebSocket أو API)
+      typingIndicator.setUserTyping(currentUser, true);
+      
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(() => {
+        typingIndicator.setUserTyping(currentUser, false);
+      }, 2000); // يختفي المؤشر بعد ثانيتين من التوقف عن الكتابة
+    }
+
+    // تعديل بسيط على دالة الاستلام لعرض الشارات (سيقوم السكريبت بدمجها تلقائياً)
+    // عند استدعاء renderMessage في ملف chat.js سيتم قراءة كائن verificationSystem
+  </script>
 </body>
 </html>
